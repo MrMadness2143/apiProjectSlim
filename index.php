@@ -9,6 +9,23 @@ require __DIR__ . '/vendor/autoload.php';
 $app = AppFactory::create();
 $app->setBasePath("/apiProjectAs"); //sets project folder as base
 
+
+$servername = "localhost";
+$username = "root";
+$password = "";
+$database = "apiproject";
+
+// Create connection
+$conn = mysqli_connect($servername, $username, $password);
+
+// Check connection
+if (!$conn) {
+  echo("Connection failed: " . mysqli_connect_error());
+}
+echo "Connected successfully";
+
+
+
 $app->get('/elogs', function (Request $request, Response $response) {
     $response->getBody()->write("Insert error log code here");
     return $response;
@@ -54,7 +71,11 @@ $app->get('/route/{latitudeA}/{longitudeA}/{latitudeB}/{longitudeB}/{wException}
 });
 
 $app->get('/stats}', function (Request $request, Response $response, $args) {
+    $sql = 'SELECT * FROM stats';   //query for all stats
+    $result = mysqli_query($conn);  //makes query and stores result
+    $stats = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
+    print_r($stats);
 });
 
 $app->get('/stats/user}', function (Request $request, Response $response, $args) {
