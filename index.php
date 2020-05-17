@@ -9,41 +9,72 @@ require __DIR__ . '/vendor/autoload.php';
 $app = AppFactory::create();
 $app->setBasePath("/apiProjectAs"); //sets project folder as base
 
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "apiproject";
-
-// Create connection
-$conn = mysqli_connect($servername, $username, $password);
-
-// Check connection
-if (!$conn) {
-  echo("Connection failed: " . mysqli_connect_error());
-}
-echo "Connected successfully";
-
-
-
 $app->get('/elogs', function (Request $request, Response $response) {
-    $response->getBody()->write("Insert error log code here");
-    return $response;
+    $conn = mysqli_connect("localhost", "root", "", "apiproject");    // Create connection
+
+    $sql = 'SELECT * FROM elogs';   //query for all elogs
+    $result = mysqli_query($conn, $sql);  //makes query and stores result
+    $elog = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
+    mysqli_free_result($result);    //frees result
+    mysqli_close($conn);            //closes database connection
+    $elog=json_encode($elog);     //encodes data into json
+    echo($elog);                //prints data
 });
 
-$app->get('/elogs/test/{errID}.{name2}', function (Request $request, Response $response, $args) {
-    $errID = $args['errID'];
-    $name2 = $args['name2'];
-    $response->getBody()->write("Hello, $errID say hello to $name2");
-    return $response;
+$app->get('/elogs/id/{errID}', function (Request $request, Response $response, $args) {
+    $conn = mysqli_connect("localhost", "root", "", "apiproject");  // Create connection
+
+    extract($args);     //extracts data from url
+    $sql = "SELECT * FROM elogs where errID = '$errID'";  //query for stat log from the date
+    $result = mysqli_query($conn, $sql);  //makes query and stores result
+    $elog = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
+    mysqli_free_result($result);    //frees result
+    mysqli_close($conn);            //closes database connection
+    $elog=json_encode($elog);     //encodes data into json
+    echo($elog);                //prints data
 });
 
 $app->get('/elogs/date/{date}', function (Request $request, Response $response, $args) {
+    $conn = mysqli_connect("localhost", "root", "", "apiproject");  // Create connection
 
+    extract($args);     //extracts data from url
+    $sql = "SELECT * FROM elogs where eLogDate = '$date'";  //query for stat log from the date
+    $result = mysqli_query($conn, $sql);  //makes query and stores result
+    $elog = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
+    mysqli_free_result($result);    //frees result
+    mysqli_close($conn);            //closes database connection
+    $elog=json_encode($elog);     //encodes data into json
+    echo($elog);                //prints data
+});
+
+$app->get('/elogs/week/{date}', function (Request $request, Response $response, $args) {
+    $conn = mysqli_connect("localhost", "root", "", "apiproject");  // Create connection
+
+    extract($args);     //extracts data from url
+    $sql = "SELECT * FROM elogs where eLogDate = '$date'";  //query for stat log from the date
+    $result = mysqli_query($conn, $sql);  //makes query and stores result
+    $elog = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
+    mysqli_free_result($result);    //frees result
+    mysqli_close($conn);            //closes database connection
+    $elog=json_encode($elog);     //encodes data into json
+    echo($elog);                //prints data
+});
+
+$app->get('/elogs/month/{date}', function (Request $request, Response $response, $args) {
+    $conn = mysqli_connect("localhost", "root", "", "apiproject");  // Create connection
+
+    extract($args);     //extracts data from url
+    $sql = "SELECT * FROM elogs where eLogDate = '$date'";  //query for stat log from the date
+    $result = mysqli_query($conn, $sql);  //makes query and stores result
+    $elog = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
+    mysqli_free_result($result);    //frees result
+    mysqli_close($conn);            //closes database connection
+    $elog=json_encode($elog);     //encodes data into json
+    echo($elog);                //prints data
 });
 
 $app->get('/elogs/user/{userID}', function (Request $request, Response $response, $args) {
-
+    
 });
 
 $app->get('/elogs/geocode/{latitude}/{longitude}', function (Request $request, Response $response, $args) {
@@ -51,14 +82,48 @@ $app->get('/elogs/geocode/{latitude}/{longitude}', function (Request $request, R
 });
 
 $app->get('/history', function (Request $request, Response $response) {
+    $conn = mysqli_connect("localhost", "root", "", "apiproject");    // Create connection
 
+    $sql = 'SELECT * FROM history';   //query for all histories
+    $result = mysqli_query($conn, $sql);  //makes query and stores result
+    $history = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
+    mysqli_free_result($result);    //frees result
+    mysqli_close($conn);            //closes database connection
+    $history=json_encode($history);     //encodes data into json
+    echo($history);                //prints data
 });
 
 $app->get('/history/route/{routeID}', function (Request $request, Response $response, $args) {
+    $conn = mysqli_connect("localhost", "root", "", "apiproject");    // Create connection
+
+    extract($args);     //extracts data from url
+    $sql = "SELECT * FROM history WHERE routeID = '$routeID'";   //query for a history
+    $result = mysqli_query($conn, $sql);  //makes query and stores result
+    $history = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
+    mysqli_free_result($result);    //frees result
+    mysqli_close($conn);            //closes database connection
+    $history=json_encode($history);     //encodes data into json
+    echo($history);                //prints data
+});
+
+$app->get('/history/day/{date}', function (Request $request, Response $response, $args) {
+    $conn = mysqli_connect("localhost", "root", "", "apiproject");    // Create connection
+
+    extract($args);     //extracts data from url
+    $sql = "SELECT * FROM history WHERE routeDate = '$date'";   //query for histories on a day
+    $result = mysqli_query($conn, $sql);  //makes query and stores result
+    $history = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
+    mysqli_free_result($result);    //frees result
+    mysqli_close($conn);            //closes database connection
+    $history=json_encode($history);     //encodes data into json
+    echo($history);                //prints data
+});
+
+$app->get('/history/week/{date}', function (Request $request, Response $response, $args) {
 
 });
 
-$app->get('/history/date/{date}', function (Request $request, Response $response, $args) {
+$app->get('/history/month/{date}', function (Request $request, Response $response, $args) {
 
 });
 
@@ -70,71 +135,77 @@ $app->get('/route/{latitudeA}/{longitudeA}/{latitudeB}/{longitudeB}/{wException}
 
 });
 
-$app->get('/stats}', function (Request $request, Response $response, $args) {
+$app->get('/stats', function (Request $request, Response $response) {
+    $conn = mysqli_connect("localhost", "root", "", "apiproject");    // Create connection
+
     $sql = 'SELECT * FROM stats';   //query for all stats
-    $result = mysqli_query($conn);  //makes query and stores result
-    $stats = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
-    print_r($stats);
+    $result = mysqli_query($conn, $sql);  //makes query and stores result
+    $stats = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
+    mysqli_free_result($result);    //frees result
+    mysqli_close($conn);            //closes database connection
+    $stats=json_encode($stats);     //encodes data into json
+    echo($stats);                //prints data
 });
 
-$app->get('/stats/user}', function (Request $request, Response $response, $args) {
+$app->get('/stats/user', function (Request $request, Response $response, $args) {
+    $conn = mysqli_connect("localhost", "root", "", "apiproject");    // Create connection
 
-});
-
-$app->get('/stats/user/daily/{date}', function (Request $request, Response $response, $args) {
-
-});
-
-$app->get('/stats/user/weekly/{date}', function (Request $request, Response $response, $args) {
-
-});
-
-$app->get('/stats/user/monthly/{date}', function (Request $request, Response $response, $args) {
-
+    $sql = 'SELECT * FROM stats where statGroup = "user"';  //query for user stats
+    $result = mysqli_query($conn, $sql);  //makes query and stores result
+    $stats = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
+    mysqli_free_result($result);    //frees result
+    mysqli_close($conn);            //closes database connection
+    $stats=json_encode($stats);     //encodes data into json
+    echo($stats);                //prints data
 });
 
 $app->get('/stats/error', function (Request $request, Response $response, $args) {
+    $conn = mysqli_connect("localhost", "root", "", "apiproject");    // Create connection
 
-});
-
-$app->get('/stats/error/daily/{date}', function (Request $request, Response $response, $args) {
-
-});
-
-$app->get('/stats/error/weekly/{date}', function (Request $request, Response $response, $args) {
-
-});
-
-$app->get('/stats/error/monthly/{date}', function (Request $request, Response $response, $args) {
-
-});
-
-$app->get('/stats/error/tRoute', function (Request $request, Response $response, $args) {
-
-});
-
-$app->get('/stats/error/tFault', function (Request $request, Response $response, $args) {
-
-});
-
-$app->get('/stats/error/average', function (Request $request, Response $response, $args) {
-
+    $sql = 'SELECT * FROM stats where statGroup = "error"';  //query for user stats
+    $result = mysqli_query($conn, $sql);  //makes query and stores result
+    $stats = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
+    mysqli_free_result($result);    //frees result
+    mysqli_close($conn);            //closes database connection
+    $stats=json_encode($stats);     //encodes data into json
+    echo($stats);                //prints data
 });
 
 $app->get('/stats/route', function (Request $request, Response $response, $args) {
+    $conn = mysqli_connect("localhost", "root", "", "apiproject");  // Create connection
 
+    $sql = 'SELECT * FROM stats where statGroup = "route"';  //query for user stats
+    $result = mysqli_query($conn, $sql);  //makes query and stores result
+    $stats = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
+    mysqli_free_result($result);    //frees result
+    mysqli_close($conn);            //closes database connection
+    $stats=json_encode($stats);     //encodes data into json
+    echo($stats);                //prints data
 });
 
-$app->get('/stats/route/daily/{date}', function (Request $request, Response $response, $args) {
-
+$app->get('/stats/route/date/{date}', function (Request $request, Response $response, $args) {
+    $conn = mysqli_connect("localhost", "root", "", "apiproject");  // Create connection
+    extract($args);     //extracts data from url
+    $sql = "SELECT * FROM statlogs where sLogDate = '$date'";  //query for stat log from the date
+    $result = mysqli_query($conn, $sql);  //makes query and stores result
+    $stats = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
+    mysqli_free_result($result);    //frees result
+    mysqli_close($conn);            //closes database connection
+    $stats=json_encode($stats);     //encodes data into json
+    echo($stats);                //prints data
 });
 
-$app->get('/stats/route/weekly/{date}', function (Request $request, Response $response, $args) {
-
-});
-
-$app->get('/stats/route/monthly/{date}', function (Request $request, Response $response, $args) {
-
-});
 $app->run();
+?>
+
+
+
+<!doctype html>
+<html>
+
+    <?php include('template/header.php'); ?>
+
+
+    <?php include('template/footer.php'); ?>
+
+</html>
