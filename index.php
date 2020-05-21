@@ -9,6 +9,12 @@ require __DIR__ . '/vendor/autoload.php';
 $app = AppFactory::create();
 $app->setBasePath("/apiProjectAs"); //sets project folder as base
 
+$app->get('/', function(Request $request, Response $response){
+echo "root";
+return $response;
+
+});
+
 $app->get('/elogs', function (Request $request, Response $response) {
     $conn = mysqli_connect("localhost", "root", "", "apiproject");    // Create connection
 
@@ -19,6 +25,7 @@ $app->get('/elogs', function (Request $request, Response $response) {
     mysqli_close($conn);            //closes database connection
     $elog=json_encode($elog);     //encodes data into json
     echo($elog);                //prints data
+    return $response;
 });
 
 $app->get('/elogs/id/{errID}', function (Request $request, Response $response, $args) {
@@ -32,6 +39,7 @@ $app->get('/elogs/id/{errID}', function (Request $request, Response $response, $
     mysqli_close($conn);            //closes database connection
     $elog=json_encode($elog);     //encodes data into json
     echo($elog);                //prints data
+    return $response;
 });
 
 $app->get('/elogs/date/{date}', function (Request $request, Response $response, $args) {
@@ -45,6 +53,7 @@ $app->get('/elogs/date/{date}', function (Request $request, Response $response, 
     mysqli_close($conn);            //closes database connection
     $elog=json_encode($elog);     //encodes data into json
     echo($elog);                //prints data
+    return $response;
 });
 
 $app->get('/elogs/week/{date}', function (Request $request, Response $response, $args) {
@@ -58,6 +67,7 @@ $app->get('/elogs/week/{date}', function (Request $request, Response $response, 
     mysqli_close($conn);            //closes database connection
     $elog=json_encode($elog);     //encodes data into json
     echo($elog);                //prints data
+    return $response;
 });
 
 $app->get('/elogs/month/{date}', function (Request $request, Response $response, $args) {
@@ -71,10 +81,11 @@ $app->get('/elogs/month/{date}', function (Request $request, Response $response,
     mysqli_close($conn);            //closes database connection
     $elog=json_encode($elog);     //encodes data into json
     echo($elog);                //prints data
+    return $response;
 });
 
 $app->get('/elogs/user/{userID}', function (Request $request, Response $response, $args) {
-    
+    echo "hello world";
 });
 
 $app->get('/elogs/geocode/{latitude}/{longitude}', function (Request $request, Response $response, $args) {
@@ -91,6 +102,7 @@ $app->get('/history', function (Request $request, Response $response) {
     mysqli_close($conn);            //closes database connection
     $history=json_encode($history);     //encodes data into json
     echo($history);                //prints data
+    return $response;
 });
 
 $app->get('/history/route/{routeID}', function (Request $request, Response $response, $args) {
@@ -104,6 +116,7 @@ $app->get('/history/route/{routeID}', function (Request $request, Response $resp
     mysqli_close($conn);            //closes database connection
     $history=json_encode($history);     //encodes data into json
     echo($history);                //prints data
+    return $response;
 });
 
 $app->get('/history/day/{date}', function (Request $request, Response $response, $args) {
@@ -117,6 +130,7 @@ $app->get('/history/day/{date}', function (Request $request, Response $response,
     mysqli_close($conn);            //closes database connection
     $history=json_encode($history);     //encodes data into json
     echo($history);                //prints data
+    return $response;
 });
 
 $app->get('/history/week/{date}', function (Request $request, Response $response, $args) {
@@ -145,6 +159,7 @@ $app->get('/stats', function (Request $request, Response $response) {
     mysqli_close($conn);            //closes database connection
     $stats=json_encode($stats);     //encodes data into json
     echo($stats);                //prints data
+    return $response;
 });
 
 $app->get('/stats/user', function (Request $request, Response $response, $args) {
@@ -157,6 +172,7 @@ $app->get('/stats/user', function (Request $request, Response $response, $args) 
     mysqli_close($conn);            //closes database connection
     $stats=json_encode($stats);     //encodes data into json
     echo($stats);                //prints data
+    return $response;
 });
 
 $app->get('/stats/error', function (Request $request, Response $response, $args) {
@@ -169,6 +185,7 @@ $app->get('/stats/error', function (Request $request, Response $response, $args)
     mysqli_close($conn);            //closes database connection
     $stats=json_encode($stats);     //encodes data into json
     echo($stats);                //prints data
+    return $response;
 });
 
 $app->get('/stats/route', function (Request $request, Response $response, $args) {
@@ -181,6 +198,7 @@ $app->get('/stats/route', function (Request $request, Response $response, $args)
     mysqli_close($conn);            //closes database connection
     $stats=json_encode($stats);     //encodes data into json
     echo($stats);                //prints data
+    return $response;
 });
 
 $app->get('/stats/route/date/{date}', function (Request $request, Response $response, $args) {
@@ -193,6 +211,7 @@ $app->get('/stats/route/date/{date}', function (Request $request, Response $resp
     mysqli_close($conn);            //closes database connection
     $stats=json_encode($stats);     //encodes data into json
     echo($stats);                //prints data
+    return $response;
 });
 
 $app->run();
