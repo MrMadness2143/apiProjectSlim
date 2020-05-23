@@ -214,6 +214,29 @@ $app->get('/stats/route/date/{date}', function (Request $request, Response $resp
     return $response;
 });
 
+$app->get('/geotest/{location}', function (Request $request, Response $response, $args) {
+    extract($args);
+    $apiKey = "nZnDXQlqhjVgX98BbCzmbgQYLilxxacjmwBsbf-0sNI";
+    $location = str_replace(' ', '',$location);
+    $url = "https://geocode.search.hereapi.com/v1/geocode?q=$location&apiKey=$apiKey";
+    $ch = curl_init();
+    $useragent = 'php';
+    curl_setopt($ch, CURLOPT_URL, $url);            //sets url for the curl operation
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); //no idea
+    curl_setopt($ch, CURLOPT_USERAGENT, $useragent);
+
+    $result=curl_exec($ch);
+    echo $result;
+    curl_close($ch);
+    return $response;
+
+    $xmlparser = xml_parser_create();
+    xml_parse_into_struct($xmlparser,$result,$values);
+    xml_parser_free($xmlparser);
+    print_r($values);
+
+});
+
 $app->run();
 ?>
 
