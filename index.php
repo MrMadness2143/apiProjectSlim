@@ -145,8 +145,12 @@ $app->get('/history/geocode/{latitude}/{longitude}', function (Request $request,
 
 });
 
-$app->get('/route/{latitudeA}/{longitudeA}/{latitudeB}/{longitudeB}/{wException}', function (Request $request, Response $response, $args) {
-
+$app->get('/route/{latitudeA}&{longitudeA}/{latitudeB}&{longitudeB}/{wException}', function (Request $request, Response $response, $args) {
+extract($args);
+echo "$latitudeA, $longitudeA\n\n";
+echo " $latitudeB, $longitudeB\n\n";
+echo " $wException\n\n";
+return $response;
 });
 
 $app->get('/stats', function (Request $request, Response $response) {
@@ -201,7 +205,7 @@ $app->get('/stats/route', function (Request $request, Response $response, $args)
     return $response;
 });
 
-$app->get('/stats/route/date/{date}', function (Request $request, Response $response, $args) {
+$app->get('/stats/date/{date}', function (Request $request, Response $response, $args) {
     $conn = mysqli_connect("localhost", "root", "", "apiproject");  // Create connection
     extract($args);     //extracts data from url
     $sql = "SELECT * FROM statlogs where sLogDate = '$date'";  //query for stat log from the date
@@ -216,28 +220,87 @@ $app->get('/stats/route/date/{date}', function (Request $request, Response $resp
 
 $app->get('/geotest/{location}', function (Request $request, Response $response, $args) {
     extract($args);
-    $apiKey = "nZnDXQlqhjVgX98BbCzmbgQYLilxxacjmwBsbf-0sNI";
-    $location = str_replace(' ', '',$location);
-    $url = "https://geocode.search.hereapi.com/v1/geocode?q=$location&apiKey=$apiKey";
-    $ch = curl_init();
-    $useragent = 'php';
-    curl_setopt($ch, CURLOPT_URL, $url);            //sets url for the curl operation
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); //no idea
-    curl_setopt($ch, CURLOPT_USERAGENT, $useragent);
-
-    $result=curl_exec($ch);
-    echo $result;
-    curl_close($ch);
+    echo geocode($location);
     return $response;
+});
 
-    $xmlparser = xml_parser_create();
-    xml_parse_into_struct($xmlparser,$result,$values);
-    xml_parser_free($xmlparser);
-    print_r($values);
+$app->get('/routetest/{locationA}&{locationB}', function (Request $request, Response $response, $args) {
+    extract($args);
+    $geoLocA=geocode($locationA);
+    $geoLocB=geocode($locationB);
+    //echo "$geoLocA and $geoLocB";
+    //echo "<br>";
+    $routeLocations = createRoute($geoLocA,$geoLocB,'2019-10-02T17:00:00');
 
+    echo $routeLocations;
+    return $response;
 });
 
 $app->run();
+
+
+function geocode($location){
+    $apiKey = "nZnDXQlqhjVgX98BbCzmbgQYLilxxacjmwBsbf-0sNI";
+    $location = str_replace(' ', '',$location); //renives spaces from location string
+    $url = "https://geocode.search.hereapi.com/v1/geocode?q=$location&apiKey=$apiKey";  //sets url for search
+    $useragent = 'php';
+    $ch = curl_init();  //starts curl session
+    curl_setopt($ch, CURLOPT_URL, $url);            //sets parameters for the curl operation
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+    curl_setopt($ch, CURLOPT_USERAGENT, $useragent);
+    $result=curl_exec($ch);     // executes curl and stores result
+    curl_close($ch);    //closes curl session
+
+    $posstart = strpos($result, 'position')+12; //finds character start position for "position"
+    $posend = strpos($result, 'access');   //finds character start position for "access"
+
+    if (strpos($result, 'access') != false){    //checks whether access variable exists
+        $reslong = strlen($result); //finds the length of result
+        $result = substr($result,$posstart,$posend-$reslong-3); //removes a length of characters around lat long values
+    }else{
+        $result = substr($result, $posstart);  //removes all values before lat
+    }
+
+    //  checks result for leftover values and removes them
+    if (strpos($result, 'mapView') !=false){
+        $posstart= 0;   //resets start value
+        $posend = strpos($result, 'mapView');   //finds character start position for "access"
+        $reslong = strlen($result);         //measures the strings lenth
+        $reslong=$reslong+3;    //adjusts for syntax
+        $result = substr($result,$posstart,$posend-$reslong); //isolates values for latitude longitude
+    }
+    $result = str_replace('"',"",$result);  //removes certain characters and names
+    $result = str_replace("lat:","",$result);
+    $result = str_replace("lng:","",$result);
+    return $result;         // returns result
+}
+function createRoute($origin,$dest,$deparTime){
+    $transport = "car";
+    $apiKey = "nZnDXQlqhjVgX98BbCzmbgQYLilxxacjmwBsbf-0sNI";
+    $return="polyline";
+    $avoid="";
+    $departbackup = "2019-10-02T17:00:00";
+    $useragent = 'php';
+
+    $url = "https://router.hereapi.com/v8/routes?transportMode=$transport&origin=$origin&destination=$dest&return=$return&departureTime=$deparTime&apiKey=$apiKey&avoid";
+    $ch = curl_init();  //starts curl session
+    curl_setopt($ch, CURLOPT_URL, $url);            //sets parameters for the curl operation
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+    curl_setopt($ch, CURLOPT_USERAGENT, $useragent);
+    $result=curl_exec($ch);     // executes curl and stores result
+    curl_close($ch);    //closes curl session
+
+    
+    //$resArray = explode('":', $result);   //turns into array spliting at value
+    //var_dump($resArray);
+    //$value = $result->routes->sections->departure->location->lat;//51.5815069
+    
+
+
+
+    return $result;
+
+}
 ?>
 
 
