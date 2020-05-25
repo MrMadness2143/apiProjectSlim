@@ -23,8 +23,7 @@ $app->get('/elogs', function (Request $request, Response $response) {
     $elog = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
     mysqli_free_result($result);    //frees result
     mysqli_close($conn);            //closes database connection
-    $elog=json_encode($elog);     //encodes data into json
-    echo($elog);                //prints data
+    print_r($elog);                //prints data
     return $response;
 });
 
@@ -37,8 +36,7 @@ $app->get('/elogs/id/{errID}', function (Request $request, Response $response, $
     $elog = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
     mysqli_free_result($result);    //frees result
     mysqli_close($conn);            //closes database connection
-    $elog=json_encode($elog);     //encodes data into json
-    echo($elog);                //prints data
+    print_r($elog);                //prints data
     return $response;
 });
 
@@ -51,8 +49,7 @@ $app->get('/elogs/date/{date}', function (Request $request, Response $response, 
     $elog = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
     mysqli_free_result($result);    //frees result
     mysqli_close($conn);            //closes database connection
-    $elog=json_encode($elog);     //encodes data into json
-    echo($elog);                //prints data
+    print_r($elog);                //prints data
     return $response;
 });
 
@@ -65,8 +62,7 @@ $app->get('/elogs/week/{date}', function (Request $request, Response $response, 
     $elog = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
     mysqli_free_result($result);    //frees result
     mysqli_close($conn);            //closes database connection
-    $elog=json_encode($elog);     //encodes data into json
-    echo($elog);                //prints data
+    print_r($elog);                //prints data
     return $response;
 });
 
@@ -79,8 +75,7 @@ $app->get('/elogs/month/{date}', function (Request $request, Response $response,
     $elog = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
     mysqli_free_result($result);    //frees result
     mysqli_close($conn);            //closes database connection
-    $elog=json_encode($elog);     //encodes data into json
-    echo($elog);                //prints data
+    print_r($elog);                //prints data
     return $response;
 });
 
@@ -100,8 +95,7 @@ $app->get('/history', function (Request $request, Response $response) {
     $history = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
     mysqli_free_result($result);    //frees result
     mysqli_close($conn);            //closes database connection
-    $history=json_encode($history);     //encodes data into json
-    echo($history);                //prints data
+    print_r($history);                //prints data
     return $response;
 });
 
@@ -114,8 +108,7 @@ $app->get('/history/route/{routeID}', function (Request $request, Response $resp
     $history = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
     mysqli_free_result($result);    //frees result
     mysqli_close($conn);            //closes database connection
-    $history=json_encode($history);     //encodes data into json
-    echo($history);                //prints data
+    print_r($history);                //prints data
     return $response;
 });
 
@@ -128,8 +121,7 @@ $app->get('/history/day/{date}', function (Request $request, Response $response,
     $history = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
     mysqli_free_result($result);    //frees result
     mysqli_close($conn);            //closes database connection
-    $history=json_encode($history);     //encodes data into json
-    echo($history);                //prints data
+    print_r($history);                //prints data
     return $response;
 });
 
@@ -145,12 +137,14 @@ $app->get('/history/geocode/{latitude}/{longitude}', function (Request $request,
 
 });
 
-$app->get('/route/{latitudeA}&{longitudeA}/{latitudeB}&{longitudeB}/{wException}', function (Request $request, Response $response, $args) {
+$app->get('/route/{locationA}&{locationB}/{wException}', function (Request $request, Response $response, $args) {
 extract($args);
-echo "$latitudeA, $longitudeA\n\n";
-echo " $latitudeB, $longitudeB\n\n";
-echo " $wException\n\n";
-return $response;
+$geolocaleA=geocode($locationA);    //obtains geocodes for use in functions
+$geolocaleB=geocode($locationB);  
+echo "$locationA is on $geolocaleA\n\n";    //echoes values for validity checking
+echo "$locationB is on $geolocaleB\n\n";
+echo "$wException\n\n";
+return $response;  
 });
 
 $app->get('/stats', function (Request $request, Response $response) {
@@ -161,8 +155,7 @@ $app->get('/stats', function (Request $request, Response $response) {
     $stats = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
     mysqli_free_result($result);    //frees result
     mysqli_close($conn);            //closes database connection
-    $stats=json_encode($stats);     //encodes data into json
-    echo($stats);                //prints data
+    print_r($stats);                //prints data
     return $response;
 });
 
@@ -174,8 +167,7 @@ $app->get('/stats/user', function (Request $request, Response $response, $args) 
     $stats = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
     mysqli_free_result($result);    //frees result
     mysqli_close($conn);            //closes database connection
-    $stats=json_encode($stats);     //encodes data into json
-    echo($stats);                //prints data
+    print_r($stats);                //prints data
     return $response;
 });
 
@@ -187,8 +179,8 @@ $app->get('/stats/error', function (Request $request, Response $response, $args)
     $stats = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
     mysqli_free_result($result);    //frees result
     mysqli_close($conn);            //closes database connection
-    $stats=json_encode($stats);     //encodes data into json
-    echo($stats);                //prints data
+
+    print_r($stats);                //prints data
     return $response;
 });
 
@@ -200,8 +192,7 @@ $app->get('/stats/route', function (Request $request, Response $response, $args)
     $stats = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
     mysqli_free_result($result);    //frees result
     mysqli_close($conn);            //closes database connection
-    $stats=json_encode($stats);     //encodes data into json
-    echo($stats);                //prints data
+    print_r($stats);                //prints data
     return $response;
 });
 
@@ -213,8 +204,7 @@ $app->get('/stats/date/{date}', function (Request $request, Response $response, 
     $stats = mysqli_fetch_all($result, MYSQLI_ASSOC);   //fetch results  as an array
     mysqli_free_result($result);    //frees result
     mysqli_close($conn);            //closes database connection
-    $stats=json_encode($stats);     //encodes data into json
-    echo($stats);                //prints data
+    print_r($stats);                //prints data
     return $response;
 });
 
@@ -233,6 +223,18 @@ $app->get('/routetest/{locationA}&{locationB}', function (Request $request, Resp
     $routeLocations = createRoute($geoLocA,$geoLocB,'2019-10-02T17:00:00');
 
     echo $routeLocations;
+    return $response;
+});
+
+$app->get('/weathertest/{location}', function (Request $request, Response $response, $args){
+    extract($args);
+    $location = geocode($location); //changes location into a string holding latitude & longitude
+    $locLength = strlen($location);
+    $locSplit = strpos($location, ',');
+    $lat = substr($location, -$locSplit);
+    $lon = substr($location, 0, $locSplit);
+    $Weather=getWeather($lat,$lon);
+    echo $Weather;
     return $response;
 });
 
@@ -256,7 +258,7 @@ function geocode($location){
 
     if (strpos($result, 'access') != false){    //checks whether access variable exists
         $reslong = strlen($result); //finds the length of result
-        $result = substr($result,$posstart,$posend-$reslong-3); //removes a length of characters around lat long values
+        $result = substr($result,$posstart,$posend-$reslong-3); //removes a length of characters before and after lat long values
     }else{
         $result = substr($result, $posstart);  //removes all values before lat
     }
@@ -269,8 +271,8 @@ function geocode($location){
         $reslong=$reslong+3;    //adjusts for syntax
         $result = substr($result,$posstart,$posend-$reslong); //isolates values for latitude longitude
     }
-    $result = str_replace('"',"",$result);  //removes certain characters and names
-    $result = str_replace("lat:","",$result);
+    $result = str_replace('"',"",$result);  //removes certain characters and names to make it usablein the next process
+    $result = str_replace("lat:","",$result); 
     $result = str_replace("lng:","",$result);
     return $result;         // returns result
 }
@@ -290,27 +292,26 @@ function createRoute($origin,$dest,$deparTime){
     $result=curl_exec($ch);     // executes curl and stores result
     curl_close($ch);    //closes curl session
 
-    
     //$resArray = explode('":', $result);   //turns into array spliting at value
     //var_dump($resArray);
     //$value = $result->routes->sections->departure->location->lat;//51.5815069
-    
-
-
 
     return $result;
+}
+
+function getWeather($latitude,$longitude){
+    $key = "a8075c527afefd92966d465d991692da";
+    $exclude = "minutes, daily";
+    $useragent = 'php';
+    $url = "https://api.openweathermap.org/data/2.5/onecall?lat=$latitude&lon=$longitude&exclude=$exclude&appid=$key";
+
+    $ch = curl_init();  //starts curl session
+    curl_setopt($ch, CURLOPT_URL, $url);            //sets parameters for the curl operation
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+    curl_setopt($ch, CURLOPT_USERAGENT, $useragent);
+    $result=curl_exec($ch);     // executes curl and stores result
+    curl_close($ch);    //closes curl session
+    echo $result;
 
 }
 ?>
-
-
-
-<!doctype html>
-<html>
-
-    <?php include('template/header.php'); ?>
-
-
-    <?php include('template/footer.php'); ?>
-
-</html>
